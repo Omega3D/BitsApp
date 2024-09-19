@@ -1,0 +1,51 @@
+<div *ngIf="loading" class="loading">Loading...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<div class="file-upload-container">
+    <input type="file" class="file-input" (change)="createPersons($event)" #fileUpload>
+</div>
+
+
+  <table *ngIf="!loading && !error" class="person-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th (click)="sortPersons('name')" class="sortable">Name <span class="sort-icon">⇅</span></th>
+        <th>Date of Birth</th>
+        <th>Is Married</th>
+        <th>Phone</th>
+        <th (click)="sortPersons('salary')" class="sortable">Salary <span class="sort-icon">⇅</span></th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let person of persons">
+        <td>{{ person.id }}</td>
+        <td>{{ person.name }}</td>
+        <td>{{ person.dateOfBirth | date }}</td>
+        <td>{{ person.isMarried ? 'Yes' : 'No' }}</td>
+        <td>{{ person.phone }}</td>
+        <td>{{ person.salary | currency }}</td>
+        <td>
+          <button (click)="openUpdateModal(person)">Update</button>
+          <button (click)="deletePerson(person.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+<div *ngIf="selectedPerson" class="update-form-container">
+    <h3>Update Person</h3>
+    <form (ngSubmit)="updatePerson(selectedPerson.id, personRequest)" class="update-form">
+        <input type="text" [(ngModel)]="personRequest.name" name="name" placeholder="Name" required />
+        <input type="date" [(ngModel)]="personRequest.dateOfBirth" name="dateOfBirth" required />
+        <label>
+            Is Married?
+            <input type="checkbox" [(ngModel)]="personRequest.isMarried" name="isMarried" />
+        </label>
+        <input type="text" [(ngModel)]="personRequest.phone" name="phone" placeholder="Phone" required />
+        <input type="number" [(ngModel)]="personRequest.salary" name="salary" placeholder="Salary" required />
+        <button type="submit">Update</button>
+        <button type="button" (click)="closeUpdateModal()">Cancel</button>
+    </form>
+</div>
